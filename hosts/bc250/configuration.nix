@@ -123,6 +123,9 @@
   virtualisation.podman.enable = true;
   programs.virt-manager.enable = true;
 
+  # SSH
+  services.openssh.enable = true;
+
   # Sudo sin contraseña para wheel
   security.sudo.wheelNeedsPassword = false;
 
