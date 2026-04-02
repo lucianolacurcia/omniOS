@@ -56,9 +56,8 @@
   # Networking (RTL8111H, r8169 driver)
   networking.networkmanager.enable = true;
 
-  # Niri (usar binario precompilado del cache)
+  # Niri (binario precompilado via niri-flake cache)
   programs.niri.enable = true;
-  programs.niri.package = pkgs.niri-stable;
 
   # Login manager
   services.greetd = {
