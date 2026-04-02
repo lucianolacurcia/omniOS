@@ -35,9 +35,6 @@
     };
   };
 
-  # Firefox
-  programs.firefox.enable = true;
-
   # Servicios necesarios para Noctalia
   hardware.bluetooth.enable = true;
   services.power-profiles-daemon.enable = true;
@@ -82,8 +79,18 @@
   # Permitir unfree (para algunos paquetes)
   nixpkgs.config.allowUnfree = true;
 
-  # Flakes
+  # Flakes & binary caches
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  nix.settings.trusted-substituters = [
+    "https://noctalia.cachix.org"
+    "https://claude-code.cachix.org"
+    "https://niri.cachix.org"
+  ];
+  nix.settings.trusted-public-keys = [
+    "noctalia.cachix.org-1:pCOR47nnMEo5thcxNDtzWpOxNFQsBRglJzxWPp3dkU4="
+    "claude-code.cachix.org-1:YeXf2aNu7UTX8Vwrze0za1WEDS+4DuI2kVeWEE4fsRk="
+    "niri.cachix.org-1:Wv0OmO7PsuocRKzfDoJ3mulSl7Z6oezYhGhR+3W2964="
+  ];
 
   system.stateVersion = "25.05";
 }

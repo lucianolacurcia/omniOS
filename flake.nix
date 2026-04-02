@@ -59,7 +59,7 @@
     commonHomeManager = {
       home-manager.useGlobalPkgs = true;
       home-manager.useUserPackages = true;
-      home-manager.extraSpecialArgs = { inherit nixvim noctalia claude-code; };
+      home-manager.extraSpecialArgs = { inherit nixvim noctalia claude-code nur; };
       home-manager.users.luciano = import ./home/luciano.nix;
     };
   in
