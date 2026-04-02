@@ -11,10 +11,9 @@
 
   # Paquetes de usuario
   home.packages = with pkgs; [
-    tmux
     sioyek
     musescore
-    alacritty
+    spotify
     claude-code.packages.${pkgs.stdenv.hostPlatform.system}.default
   ];
 
@@ -26,6 +25,7 @@
       isDefault = true;
       extensions.packages = with nur.legacyPackages.${pkgs.stdenv.hostPlatform.system}.repos.rycee.firefox-addons; [
         ublock-origin
+        bitwarden
       ];
     };
   };
@@ -34,6 +34,15 @@
   programs.noctalia-shell = {
     enable = true;
     systemd.enable = true;  # Auto-start via systemd user service
+    settings = {
+      bar.position = "bottom";
+      colorSchemes.predefinedScheme = "Gruvbox";
+      wallpaper.directory = "/home/luciano/Pictures/Wallpapers";
+      wallpaper.disableWallpaper = false;
+      wallpaper.automationEnabled = true;
+      wallpaper.wallpaperChangeMode = "random";
+      wallpaper.randomIntervalSec = 300;
+    };
   };
 
   # Neovim via nixvim
@@ -47,6 +56,22 @@
       expandtab = true;
       clipboard = "unnamedplus";
     };
+    plugins.tmux-navigator.enable = true;
+    plugins.oil.enable = true;
+  };
+
+  # Alacritty
+  programs.alacritty = {
+    enable = true;
+    settings.window.opacity = 0.85;
+  };
+
+  # Tmux
+  programs.tmux = {
+    enable = true;
+    plugins = with pkgs.tmuxPlugins; [
+      vim-tmux-navigator
+    ];
   };
 
   # Git
@@ -79,19 +104,68 @@
       };
     };
 
+    prefer-no-csd = true;
+
     layout = {
-      gaps = 16;
+      gaps = 8;
       center-focused-column = "never";
+      background-color = "transparent";
+      focus-ring = {
+        width = 2;
+        active.color = "#b8bb26";
+        inactive.color = "#3c3836";
+      };
+      border = {
+        enable = true;
+        width = 2;
+        active.color = "#b8bb26";
+        inactive.color = "#3c3836";
+      };
       preset-column-widths = [
         { proportion = 1.0 / 3; }
         { proportion = 1.0 / 2; }
         { proportion = 2.0 / 3; }
       ];
       default-column-width.proportion = 0.5;
-      focus-ring = {
-        width = 4;
-        active.color = "#7fc8ff";
-        inactive.color = "#505050";
+    };
+
+    animations = {
+      workspace-switch.kind.spring = {
+        damping-ratio = 1.0;
+        stiffness = 1000;
+        epsilon = 0.0001;
+      };
+      window-open.kind.easing = {
+        duration-ms = 200;
+        curve = "ease-out-quad";
+      };
+      window-close.kind.easing = {
+        duration-ms = 200;
+        curve = "ease-out-cubic";
+      };
+      horizontal-view-movement.kind.spring = {
+        damping-ratio = 1.0;
+        stiffness = 900;
+        epsilon = 0.0001;
+      };
+      window-movement.kind.spring = {
+        damping-ratio = 1.0;
+        stiffness = 800;
+        epsilon = 0.0001;
+      };
+      window-resize.kind.spring = {
+        damping-ratio = 1.0;
+        stiffness = 1000;
+        epsilon = 0.0001;
+      };
+      config-notification-open-close.kind.spring = {
+        damping-ratio = 0.6;
+        stiffness = 1200;
+        epsilon = 0.001;
+      };
+      screenshot-ui-open.kind.easing = {
+        duration-ms = 300;
+        curve = "ease-out-quad";
       };
     };
 
@@ -230,7 +304,7 @@
       "Mod+R".action       = actions.switch-preset-column-width;
       "Mod+Shift+R".action = actions.switch-preset-window-height;
       "Mod+Ctrl+R".action  = actions.reset-window-height;
-      "Mod+F".action       = actions.maximize-column;
+      "Mod+F".action       = actions.maximize-window-to-edges;
       "Mod+Shift+F".action = actions.fullscreen-window;
       "Mod+Ctrl+F".action  = actions.expand-column-to-available-width;
       "Mod+C".action       = actions.center-column;
@@ -263,6 +337,15 @@
 
     window-rules = [
       {
+        geometry-corner-radius = let r = 12.0; in {
+          bottom-left = r;
+          bottom-right = r;
+          top-left = r;
+          top-right = r;
+        };
+        clip-to-geometry = true;
+      }
+      {
         matches = [{ app-id = "^org\\.wezfurlong\\.wezterm$"; }];
         default-column-width = {};
       }
@@ -271,6 +354,12 @@
         open-floating = true;
       }
     ];
+  };
+
+  # Wallpapers (baked into the nix config)
+  home.file."Pictures/Wallpapers" = {
+    source = ../wallpapers;
+    recursive = true;
   };
 
   home.stateVersion = "25.05";

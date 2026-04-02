@@ -59,6 +59,7 @@
     commonHomeManager = {
       home-manager.useGlobalPkgs = true;
       home-manager.useUserPackages = true;
+      home-manager.backupFileExtension = "bak";
       home-manager.extraSpecialArgs = { inherit nixvim noctalia claude-code nur; };
       home-manager.users.luciano = import ./home/luciano.nix;
     };
@@ -66,7 +67,7 @@
   {
     nixosConfigurations.thinkpad = nixpkgs.lib.nixosSystem {
       inherit system;
-      specialArgs = { inherit nixvim noctalia claude-code; };
+      specialArgs = { inherit nixvim noctalia claude-code niri; };
       modules = [
         ./hosts/thinkpad/configuration.nix
         ./hosts/thinkpad/hardware-configuration.nix
@@ -80,7 +81,7 @@
 
     nixosConfigurations.bc250 = nixpkgs.lib.nixosSystem {
       inherit system;
-      specialArgs = { inherit nixvim noctalia claude-code nix-oberon; };
+      specialArgs = { inherit nixvim noctalia claude-code niri nix-oberon; };
       modules = [
         ./hosts/bc250/configuration.nix
         ./hosts/bc250/hardware-configuration.nix

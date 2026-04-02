@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, niri, ... }:
 
 {
   # Hostname
@@ -25,6 +25,7 @@
 
   # Niri como window manager (binario precompilado via niri-flake cache)
   programs.niri.enable = true;
+  programs.niri.package = niri.packages.${pkgs.stdenv.hostPlatform.system}.niri-unstable;
 
   # Login manager
   services.greetd = {
@@ -75,6 +76,9 @@
     initialPassword = "changeme";
     extraGroups = [ "wheel" "video" "input" "networkmanager" ];
   };
+
+  # Sudo sin contraseña para wheel
+  security.sudo.wheelNeedsPassword = false;
 
   # Permitir unfree (para algunos paquetes)
   nixpkgs.config.allowUnfree = true;

@@ -1,4 +1,4 @@
-{ config, pkgs, nix-oberon, ... }:
+{ config, pkgs, niri, nix-oberon, ... }:
 
 {
   networking.hostName = "bc250";
@@ -58,6 +58,7 @@
 
   # Niri (binario precompilado via niri-flake cache)
   programs.niri.enable = true;
+  programs.niri.package = niri.packages.${pkgs.stdenv.hostPlatform.system}.niri-unstable;
 
   # Login manager
   services.greetd = {
@@ -109,6 +110,9 @@
     isNormalUser = true;
     extraGroups = [ "wheel" "video" "input" "networkmanager" ];
   };
+
+  # Sudo sin contraseña para wheel
+  security.sudo.wheelNeedsPassword = false;
 
   environment.systemPackages = with pkgs; [
     git
