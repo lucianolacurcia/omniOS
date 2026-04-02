@@ -68,6 +68,7 @@
   environment.systemPackages = with pkgs; [
     git
     brightnessctl
+    xwayland-satellite
   ];
 
   # Usuario

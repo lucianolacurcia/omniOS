@@ -20,7 +20,17 @@
     "ttm.page_pool_size=3959290"
     "processor.ignore_ppc=1"         # ignore BIOS frequency limits
     "usbcore.autosuspend=-1"         # disable USB autosuspend
+    # Zswap
+    "zswap.enabled=1"
+    "zswap.compressor=zstd"
+    "zswap.zpool=zsmalloc"
   ];
+
+  # Swap (backing store for zswap)
+  swapDevices = [{
+    device = "/var/lib/swapfile";
+    size = 16 * 1024; # 16GB
+  }];
 
   # AMDGPU + Cyan Skillfish firmware
   boot.initrd.kernelModules = [ "amdgpu" ];
@@ -63,6 +73,7 @@
   # Niri (binario precompilado via niri-flake cache)
   programs.niri.enable = true;
   programs.niri.package = niri.packages.${pkgs.stdenv.hostPlatform.system}.niri-unstable;
+  programs.xwayland.enable = true;
 
   # Login manager
   services.greetd = {
@@ -77,7 +88,12 @@
   programs.firefox.enable = true;
 
   # Steam
-  programs.steam.enable = true;
+  programs.steam = {
+    enable = true;
+    protontricks.enable = true;
+    extraCompatPackages = with pkgs; [ proton-ge-bin ];
+  };
+  programs.gamemode.enable = true;
 
   # Servicios para Noctalia
   hardware.bluetooth.enable = true;
@@ -131,6 +147,8 @@
 
   environment.systemPackages = with pkgs; [
     git
+    xwayland-satellite
+    mangohud
   ];
 
   nixpkgs.config.allowUnfree = true;
