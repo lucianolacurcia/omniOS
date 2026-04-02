@@ -74,8 +74,13 @@
   users.users.luciano = {
     isNormalUser = true;
     initialPassword = "changeme";
-    extraGroups = [ "wheel" "video" "input" "networkmanager" ];
+    extraGroups = [ "wheel" "video" "input" "networkmanager" "libvirtd" ];
   };
+
+  # Virtualización
+  virtualisation.libvirtd.enable = true;
+  virtualisation.podman.enable = true;
+  programs.virt-manager.enable = true;
 
   # Sudo sin contraseña para wheel
   security.sudo.wheelNeedsPassword = false;

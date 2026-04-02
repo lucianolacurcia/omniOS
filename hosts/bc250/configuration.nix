@@ -1,4 +1,4 @@
-{ config, pkgs, niri, nix-oberon, ... }:
+{ config, pkgs, niri, cyan-skillfish-governor, ... }:
 
 {
   networking.hostName = "bc250";
@@ -25,10 +25,7 @@
   # AMDGPU + Cyan Skillfish firmware
   boot.initrd.kernelModules = [ "amdgpu" ];
   hardware.amdgpu.initrd.enable = true;
-  hardware.firmware = [ pkgs.linux-firmware ];
-
-  # Mesa overlay from nix-oberon (Cyan Skillfish patches + raytracing)
-  nixpkgs.overlays = [ nix-oberon.overlays.default ];
+  hardware.enableRedistributableFirmware = true;
 
   # Graphics (Vulkan RADV)
   hardware.graphics = {
@@ -36,9 +33,9 @@
     enable32Bit = true;
   };
 
-  # Oberon governor (GPU frequency/voltage scaling)
-  services.oberon.enable = true;
-  services.oberon-governor.enable = true;
+  # Cyan Skillfish GPU governor
+  _module.args.self = cyan-skillfish-governor;
+  services.cyan-skillfish-governor.enable = true;
 
   # Temperature sensors (NCT6686 SuperIO)
   boot.kernelModules = [ "nct6683" ];
@@ -52,6 +49,13 @@
     RADV_DEBUG = "nohiz";            # fix z-buffer glitches
     RUSTICL_ENABLE = "radeonsi";     # OpenCL via rusticl
   };
+
+  # WiFi (TP-Link TX10UB, RTL8821CU)
+  boot.extraModulePackages = with config.boot.kernelPackages; [ rtl8821cu ];
+  hardware.usb-modeswitch.enable = true;
+  services.udev.extraRules = ''
+    ACTION=="add", SUBSYSTEM=="usb", ATTR{idVendor}=="0bda", ATTR{idProduct}=="1a2b", RUN+="${pkgs.usb-modeswitch}/bin/usb_modeswitch -KW -v 0bda -p 1a2b"
+  '';
 
   # Networking (RTL8111H, r8169 driver)
   networking.networkmanager.enable = true;
@@ -71,6 +75,9 @@
 
   # Firefox
   programs.firefox.enable = true;
+
+  # Steam
+  programs.steam.enable = true;
 
   # Servicios para Noctalia
   hardware.bluetooth.enable = true;
@@ -108,8 +115,13 @@
   # Usuario
   users.users.luciano = {
     isNormalUser = true;
-    extraGroups = [ "wheel" "video" "input" "networkmanager" ];
+    extraGroups = [ "wheel" "video" "input" "networkmanager" "libvirtd" ];
   };
+
+  # Virtualización
+  virtualisation.libvirtd.enable = true;
+  virtualisation.podman.enable = true;
+  programs.virt-manager.enable = true;
 
   # Sudo sin contraseña para wheel
   security.sudo.wheelNeedsPassword = false;

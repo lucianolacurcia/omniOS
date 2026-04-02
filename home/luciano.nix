@@ -15,6 +15,29 @@
     musescore
     spotify
     claude-code.packages.${pkgs.stdenv.hostPlatform.system}.default
+    # Go
+    go
+    delve
+    golangci-lint
+    # C/C++
+    clang
+    gnumake
+    cmake
+    # Zig
+    zig
+    zls
+    # Rust
+    rustc
+    cargo
+    rustfmt
+    clippy
+    # Virtualización
+    virt-manager
+    firecracker
+    # Debug
+    gdb
+    # GitHub CLI
+    gh
   ];
 
   # Firefox con extensiones
@@ -27,6 +50,14 @@
         ublock-origin
         bitwarden
       ];
+      settings = {
+        # No guardar contraseñas
+        "signon.rememberSignons" = false;
+        # Desactivar traducción
+        "browser.translations.enable" = false;
+        # Desactivar smooth scrolling
+        "general.smoothScroll" = false;
+      };
     };
   };
 
@@ -56,6 +87,24 @@
       expandtab = true;
       clipboard = "unnamedplus";
     };
+    colorschemes.gruvbox.enable = true;
+    highlightOverride = {
+      Normal = { bg = "none"; };
+      NormalFloat = { bg = "none"; };
+    };
+    plugins.lsp = {
+      enable = true;
+      servers = {
+        gopls.enable = true;
+        clangd.enable = true;
+      };
+      onAttach = ''
+        if client.supports_method("textDocument/completion") then
+          vim.lsp.completion.enable(true, client.id, bufnr, { autotrigger = true })
+        end
+      '';
+    };
+    plugins.rustaceanvim.enable = true;
     plugins.tmux-navigator.enable = true;
     plugins.oil.enable = true;
   };

@@ -40,20 +40,19 @@
       url = "github:sadjow/claude-code-nix";
     };
 
-    # BC-250: Mesa patches + oberon governor
-    nix-oberon = {
-      url = "github:soapyham/nix-oberon";
+    # BC-250: Cyan Skillfish GPU governor
+    cyan-skillfish-governor = {
+      url = "github:ktaf/cyan-skillfish-governor";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # BC-250: kernel driver freq/voltage patch + Rust governor
     nur = {
       url = "github:nix-community/NUR";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 
-  outputs = { nixpkgs, home-manager, nixvim, niri, noctalia, claude-code, nix-oberon, nur, ... }:
+  outputs = { nixpkgs, home-manager, nixvim, niri, noctalia, claude-code, cyan-skillfish-governor, nur, ... }:
   let
     system = "x86_64-linux";
     commonHomeManager = {
@@ -81,13 +80,13 @@
 
     nixosConfigurations.bc250 = nixpkgs.lib.nixosSystem {
       inherit system;
-      specialArgs = { inherit nixvim noctalia claude-code niri nix-oberon; };
+      specialArgs = { inherit nixvim noctalia claude-code niri cyan-skillfish-governor; };
       modules = [
         ./hosts/bc250/configuration.nix
         ./hosts/bc250/hardware-configuration.nix
 
         niri.nixosModules.niri
-        nix-oberon.nixosModules.default
+        cyan-skillfish-governor.nixosModules.default
 
         home-manager.nixosModules.home-manager
         commonHomeManager
