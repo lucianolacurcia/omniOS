@@ -74,7 +74,32 @@
       wallpaper.wallpaperChangeMode = "random";
       wallpaper.randomIntervalSec = 300;
     };
+    plugins = {
+      sources = [
+        {
+          enabled = true;
+          name = "Noctalia Plugins";
+          url = "https://github.com/noctalia-dev/noctalia-plugins";
+        }
+        {
+          enabled = true;
+          name = "Luciano Plugins";
+          url = "https://github.com/lucianolacurcia/noctalia-plugins";
+        }
+      ];
+      states = {
+        niri-column-indicator = {
+          enabled = true;
+          source = "local";
+        };
+      };
+      version = 2;
+    };
   };
+
+  # Niri column indicator plugin (installed locally)
+  xdg.configFile."noctalia/plugins/niri-column-indicator/manifest.json".source = ../plugins/niri-column-indicator/manifest.json;
+  xdg.configFile."noctalia/plugins/niri-column-indicator/BarWidget.qml".source = ../plugins/niri-column-indicator/BarWidget.qml;
 
   # Neovim via nixvim
   programs.nixvim = {
