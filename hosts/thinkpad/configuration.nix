@@ -23,8 +23,9 @@
   };
   console.keyMap = "us-acentos";
 
-  # Niri como window manager
+  # Niri como window manager (usar binario precompilado del cache)
   programs.niri.enable = true;
+  programs.niri.package = pkgs.niri-stable;
 
   # Login manager
   services.greetd = {
