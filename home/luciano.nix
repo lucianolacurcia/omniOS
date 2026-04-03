@@ -1,5 +1,13 @@
 { pkgs, config, nixvim, noctalia, claude-code, nur, ... }:
 
+let
+  niri-column-indicator = pkgs.fetchFromGitHub {
+    owner = "lucianolacurcia";
+    repo = "noctalia-plugins";
+    rev = "main";
+    sha256 = "142hybdvx3gamzcf63986jhab50x94q6lskz26fgxwr05w264lhf";
+  };
+in
 {
   imports = [
     nixvim.homeModules.nixvim
@@ -116,6 +124,11 @@
     };
   };
 
+  # Install niri-column-indicator plugin from GitHub
+  xdg.configFile."noctalia/plugins/niri-column-indicator" = {
+    source = "${niri-column-indicator}/niri-column-indicator";
+    recursive = true;
+  };
 
   # Neovim via nixvim
   programs.nixvim = {
