@@ -67,6 +67,25 @@
     systemd.enable = true;  # Auto-start via systemd user service
     settings = {
       bar.position = "bottom";
+      bar.widgets = {
+        left = [
+          { id = "Clock"; }
+          { id = "SystemMonitor"; }
+          { id = "ActiveWindow"; }
+          { id = "MediaMini"; }
+        ];
+        center = [
+          { id = "plugin:niri-column-indicator"; }
+        ];
+        right = [
+          { id = "Tray"; }
+          { id = "NotificationHistory"; }
+          { id = "Battery"; }
+          { id = "Volume"; }
+          { id = "Brightness"; }
+          { id = "ControlCenter"; }
+        ];
+      };
       colorSchemes.predefinedScheme = "Gruvbox";
       wallpaper.directory = "/home/luciano/Pictures/Wallpapers";
       wallpaper.disableWallpaper = false;
