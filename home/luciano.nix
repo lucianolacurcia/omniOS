@@ -177,6 +177,28 @@ in
     ];
   };
 
+  # Idle lock (lock after 5min, monitors off after 10min, lock before sleep)
+  services.swayidle = {
+    enable = true;
+    timeouts = [
+      {
+        timeout = 300;
+        command = "noctalia-shell ipc call lockScreen lock";
+      }
+      {
+        timeout = 600;
+        command = "niri msg action power-off-monitors";
+        resumeCommand = "niri msg action power-on-monitors";
+      }
+    ];
+    events = [
+      {
+        event = "before-sleep";
+        command = "noctalia-shell ipc call lockScreen lock";
+      }
+    ];
+  };
+
   # Git
   programs.git = {
     enable = true;
@@ -288,7 +310,7 @@ in
       # Applications
       "Mod+T".action.spawn = "alacritty";
       "Mod+D".action.spawn = ["noctalia-shell" "ipc" "call" "launcher" "toggle"];
-      "Super+Alt+L".action.spawn = "swaylock";
+      "Super+Alt+L".action.spawn = ["noctalia-shell" "ipc" "call" "lockScreen" "lock"];
 
       # Screen reader toggle
       "Super+Alt+S" = {
