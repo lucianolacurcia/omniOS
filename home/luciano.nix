@@ -22,6 +22,7 @@ in
     sioyek
     musescore
     spotify
+    discord
     claude-code.packages.${pkgs.stdenv.hostPlatform.system}.default
     # Go
     go
