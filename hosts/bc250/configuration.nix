@@ -131,7 +131,7 @@
   # Usuario
   users.users.luciano = {
     isNormalUser = true;
-    extraGroups = [ "wheel" "video" "input" "networkmanager" "libvirtd" ];
+    extraGroups = [ "wheel" "video" "input" "networkmanager" "libvirtd" "dialout" ];
   };
 
   # Virtualización
@@ -145,11 +145,36 @@
   # Sudo sin contraseña para wheel
   security.sudo.wheelNeedsPassword = false;
 
+  # Sunshine - servidor de streaming para Moonlight
   environment.systemPackages = with pkgs; [
     git
     xwayland-satellite
     mangohud
+    sunshine        # Servidor de streaming Moonlight
   ];
+
+  # Firewall para Sunshine
+  networking.firewall = {
+    enable = true;
+    allowedTCPPorts = [
+      22          # SSH
+      47989       # Sunshine HTTPS
+      47990       # Sunshine HTTP
+    ];
+    allowedUDPPorts = [
+      47998       # Sunshine video
+      47999       # Sunshine control
+      48000       # Sunshine audio
+    ];
+  };
+
+  # Permisos para capture de pantalla en Wayland
+  security.wrappers.sunshine = {
+    owner = "root";
+    group = "root";
+    capabilities = "cap_sys_admin+ep";
+    source = "${pkgs.sunshine}/bin/sunshine";
+  };
 
   nixpkgs.config.allowUnfree = true;
   nix.settings.experimental-features = [ "nix-command" "flakes" ];

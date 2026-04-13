@@ -65,10 +65,13 @@
 
   # Laptop power & brightness
   services.thermald.enable = true;
+  
+  # Moonlight - cliente de streaming para conectar a Sunshine
   environment.systemPackages = with pkgs; [
     git
     brightnessctl
     xwayland-satellite
+    moonlight-qt      # Cliente Moonlight con interfaz gráfica
   ];
 
   # Usuario
